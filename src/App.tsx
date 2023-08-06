@@ -2,7 +2,9 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 
 import { Attestooooooor } from "./components";
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LoginPage from "./pages/loginPage";
+import HomePage from "./pages/homePage";
 export function App() {
   /**
    * Wagmi hook for getting account information
@@ -11,19 +13,25 @@ export function App() {
   const { isConnected } = useAccount();
 
   return (
-    <>
-      <h1>OP Starter Project</h1>
+    // <>
+    //   <h1>OP Starter Project</h1>
 
-      {/** @see https://www.rainbowkit.com/docs/connect-button */}
-      <ConnectButton />
+    //   {/** @see https://www.rainbowkit.com/docs/connect-button */}
+    //   <ConnectButton />
 
-      {isConnected && (
-        <>
-          <hr />
-          <Attestooooooor />
-          <hr />
-        </>
-      )}
-    </>
+    //   {isConnected && (
+    //     <>
+    //       <hr />
+    //       <Attestooooooor />
+    //       <hr />
+    //     </>
+    //   )}
+    // </>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </Router>
   );
 }
