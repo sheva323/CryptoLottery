@@ -123,6 +123,10 @@ contract SuperLoto is VRFConsumerBaseV2, ConfirmedOwner {
       msg.value == lotteries[gameIndex].ticketCost,
       "Incorrect ticket price"
     );
+    require(
+      gameHistory[gameIndex][_number] == address(0),
+      "Number already chosen"
+    );
     gameHistory[gameIndex][_number] = msg.sender;
   }
 }
