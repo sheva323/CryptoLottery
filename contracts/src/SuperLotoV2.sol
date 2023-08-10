@@ -7,8 +7,8 @@ contract SuperLoto {
   struct Lottery {
     uint256 ticketCost;
     uint256 dueDate;
-    uint256 playersAmount;
     uint256 balanceBag;
+    address[] playerTickets;
     uint128 maxPlayers;
     uint128 minPlayers;
     bool isActive;
@@ -22,7 +22,8 @@ contract SuperLoto {
     require(msg.sender == lotteryOwner, "Caller is not the lottery owner");
     _;
   }
-  mapping(uint256 => mapping(uint256 => Player)) public gameHistory; //gameIndex => lotteryNumber => player
+  //mapping(uint256 => mapping(uint256 => Player)) public gameHistory; //gameIndex => lotteryNumber => player
+  mapping(uint256 => mapping(address => address)) public beneficiary; //gameIndex => player  => beneficiary
   mapping(uint256 => Lottery) public lotteries; //gameIndex => lottery info
   mapping(uint256 => Player) public winners; //gameIndex => winner
 
@@ -33,53 +34,53 @@ contract SuperLoto {
   address public lotteryOwner;
   uint256 public gameIndex;
   uint256 public expensesPercentage;
-  address[] public currentBeneficiaries;
   uint256 private constant SECONDS_IN_A_DAY = 86400; // 24 * 60 * 60
 
   function startNewGame(
     uint256 _ticketCost,
-    uint256 _playersAmount,
     uint256 _expensesPercentage,
     uint256 _gameDurationInDays,
-    address[] memory _beneficiaries,
     uint128 _maxPlayers,
     uint128 _minPlayers
   ) external onlyOwner {
     require(!lotteries[gameIndex].isActive, "The game is still in progress");
     require(_expensesPercentage <= 5, "Expenses percentage must be <= 10");
-    require(
-      _beneficiaries.length <= 10,
-      "Beneficiaries array should not contain more than 10 addresses"
-    );
     uint256 _gameDurationInSeconds = _gameDurationInDays * SECONDS_IN_A_DAY;
-
+    address[] memory initPlayers;
     gameIndex++;
     lotteries[gameIndex] = Lottery({
       ticketCost: _ticketCost,
       dueDate: block.timestamp + _gameDurationInSeconds,
-      playersAmount: _playersAmount,
       balanceBag: 0,
+      playerTickets: initPlayers,
       maxPlayers: _maxPlayers,
       minPlayers: _minPlayers,
       isActive: true,
       isPaid: false
     });
     expensesPercentage = _expensesPercentage;
-    currentBeneficiaries = _beneficiaries;
     emit ExpensesPercentageUpdated(_expensesPercentage);
   }
 
-  function buyTicket(uint256 _number, address _beneficiary) external payable {
+  function buyTicket(address _beneficiary) external payable {
     Lottery storage currentLottery = lotteries[gameIndex];
     require(currentLottery.isActive, "The game is not in progress");
-    require(msg.value == currentLottery.ticketCost, "Incorrect ticket price");
     require(
-      gameHistory[gameIndex][_number].playerAddress == address(0),
-      "Number already chosen"
+      msg.value % currentLottery.ticketCost == 0,
+      "the value sent is not correct "
     );
-    gameHistory[gameIndex][_number].playerAddress = msg.sender;
-    gameHistory[gameIndex][_number].beneficiary = _beneficiary;
-    currentLottery.balanceBag += msg.value;
+    uint256 numOfTicketsToBuy = msg.value / currentLottery.ticketCost;
+
+    require(
+      numOfTicketsToBuy <=
+        (currentLottery.maxPlayers - currentLottery.playerTickets.length),
+      "Not enough tickets available."
+    );
+    for (uint256 i = 0; i < numOfTicketsToBuy; i++) {
+      lotteries[gameIndex].playerTickets.push(msg.sender);
+    }
+    lotteries[gameIndex].balanceBag += msg.value;
+    beneficiary[gameIndex][msg.sender] = _beneficiary;
   }
 
   function finishGame() external onlyOwner {
@@ -88,37 +89,22 @@ contract SuperLoto {
       block.timestamp >= currentLottery.dueDate,
       "Game has not finished yet"
     );
-    uint256 winnerNumber = getPseudoRandom(
-      currentLottery.playersAmount,
-      currentLottery.maxPlayers
+    uint256 winningTicket = getPseudoRandom(
+      currentLottery.playerTickets.length
     );
-    address winnerPlayer = gameHistory[gameIndex][winnerNumber].playerAddress;
-    if (winnerPlayer != address(0)) {
-      address winnerBeneficiary = gameHistory[gameIndex][winnerNumber]
-        .beneficiary;
-      splitPayment(winnerPlayer, winnerBeneficiary, currentLottery.balanceBag);
-    } else {
-      address randomBeneficiary = chooseRandomBeneficiary(
-        uint256(keccak256(abi.encodePacked(blockhash(block.number - 1))))
-      );
-      splitPayment(
-        randomBeneficiary,
-        randomBeneficiary,
-        currentLottery.balanceBag
-      );
-    }
+    address winnerPlayer = currentLottery.playerTickets[winningTicket];
+    require(winnerPlayer != address(0), "Invalid winner address");
+    address winnerBeneficiary = beneficiary[gameIndex][winnerPlayer];
+    splitPayment(winnerPlayer, winnerBeneficiary, currentLottery.balanceBag);
   }
 
-  function getPseudoRandom(
-    uint256 seed,
-    uint256 range
-  ) internal view returns (uint256) {
-    require(range > 0, "Range must be greater than zero");
+  function getPseudoRandom(uint256 seed) internal view returns (uint256) {
+    require(seed > 0, "No purchased tickets");
     bytes32 blockHash = blockhash(block.number - seed);
     uint256 randomNumber = uint256(
       keccak256(abi.encodePacked(block.timestamp, blockHash))
     );
-    uint256 winningTicket = randomNumber % range;
+    uint256 winningTicket = randomNumber % seed;
     return winningTicket;
   }
 
@@ -135,22 +121,13 @@ contract SuperLoto {
     uint256 expenses = (balanceToSplit * expensesPercentage) / 100;
     uint256 prizeAfterExpenses = balanceToSplit - expenses;
     uint256 amountToSend = prizeAfterExpenses / 2;
-
-    payable(recipient1).transfer(amountToSend);
-    payable(recipient2).transfer(amountToSend);
-    closeGame();
-  }
-
-  function closeGame() internal {
     lotteries[gameIndex].isPaid = true;
     lotteries[gameIndex].isActive = false;
-  }
-
-  function chooseRandomBeneficiary(
-    uint256 seed
-  ) internal view returns (address) {
-    require(currentBeneficiaries.length > 0, "No beneficiaries available");
-    uint256 beneficiaryIndex = seed % currentBeneficiaries.length;
-    return currentBeneficiaries[beneficiaryIndex];
+    payable(recipient1).transfer(amountToSend);
+    payable(recipient2).transfer(amountToSend);
+    winners[gameIndex] = Player({
+      playerAddress: recipient1,
+      beneficiary: recipient2
+    });
   }
 }
