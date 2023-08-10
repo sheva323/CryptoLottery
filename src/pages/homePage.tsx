@@ -15,11 +15,11 @@ const HomePage = () => {
     <Buy /> */}
     {/* <Projects /> */}
     <Grid
-      templateAreas={`"header header"
-                  "main main"
-                  "footer footer"`}
+      templateAreas={`"header"
+                  "main"
+                  "footer"`}
       gridTemplateRows={'auto 1fr auto'}
-      gridTemplateColumns={'150px 1fr'}
+      gridTemplateColumns={'1fr'}
       h='200px'
       gap='1'
       color='blackAlpha.700'
@@ -27,13 +27,13 @@ const HomePage = () => {
       maxW='70%'
       margin="0 auto"
     >
-      <GridItem pl='2' bg='orange.300' area={'header'}>
+      <GridItem area={'header'}>
         <Counter />
       </GridItem>
-      <GridItem pl='2' bg='green.300' area={'main'}>
+      <GridItem bg='green.300' area={'main'}>
         <Multistep />
       </GridItem>
-      <GridItem pl='2' bg='blue.300' area={'footer'}>
+      <GridItem bg='blue.300' area={'footer'}>
         Footer
       </GridItem>
     </Grid>
