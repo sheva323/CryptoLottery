@@ -20,6 +20,9 @@ import {
   Textarea,
   FormHelperText,
   InputRightElement,
+  Radio,
+  Text,
+  RadioGroup,
 } from '@chakra-ui/react';
 import Buy from './buy';
 import Projects from './projects';
@@ -46,15 +49,22 @@ const Form2 = () => {
       <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
         User Details
       </Heading>
-      <Grid templateColumns='repeat(5, 1fr)' gap={6}>
-        <Projects />
-        <Projects />
-        <Projects />
-        <Projects />
-        <Projects />
-        <Projects />
-        <Projects />
-      </Grid>
+      <RadioGroup>
+        <Grid templateColumns='repeat(5, 1fr)' gap={6}>
+          <Box>
+            <Projects />
+            <Radio value='1' />
+          </Box>
+          <Box>
+            <Projects />
+            <Radio value='2' />
+          </Box>
+          <Box>
+            <Projects />
+            <Radio value='3' />
+          </Box>
+        </Grid>
+      </RadioGroup>
     </>
   )
 }
