@@ -83,6 +83,9 @@ export default function Multistep() {
         shadow="1px 1px 3px teal.500"
         maxWidth={800}
         p={6}
+        display="flex"
+        flexDirection="column"
+        justifyContent="space-between"
         overflowY='auto'
         m="10px auto"
         as="form"

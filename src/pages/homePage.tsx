@@ -16,8 +16,7 @@ const HomePage = () => {
     {/* <Projects /> */}
     <Grid
       templateAreas={`"header"
-                  "main"
-                  "footer"`}
+        "main"`}
       gridTemplateRows={'auto 1fr auto'}
       gridTemplateColumns={'1fr'}
       h='200px'
@@ -32,9 +31,6 @@ const HomePage = () => {
       </GridItem>
       <GridItem area={'main'}>
         <Multistep />
-      </GridItem>
-      <GridItem bg='blue.300' area={'footer'}>
-        Footer
       </GridItem>
     </Grid>
 
