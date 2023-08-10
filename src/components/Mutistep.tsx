@@ -8,23 +8,8 @@ import {
   Button,
   Heading,
   Flex,
-  FormControl,
-  GridItem,
   HStack,
-  FormLabel,
-  Input,
-  Grid,
-  Select,
-  SimpleGrid,
-  InputLeftAddon,
-  InputGroup,
-  Textarea,
-  FormHelperText,
-  InputRightElement,
-  Radio,
-  useRadioGroup,
-  Text,
-  RadioGroup,
+  useRadioGroup
 } from '@chakra-ui/react';
 import Buy from './buy';
 import { useToast } from '@chakra-ui/react';
@@ -36,9 +21,9 @@ const Form1 = () => {
   return (
     <>
       <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
-        User Registration
+        Buy your ticket
       </Heading>
-      <Flex>
+      <Flex justifyContent="center">
         <Buy />
       </Flex>
     </>
@@ -94,16 +79,16 @@ export default function Multistep() {
     <>
       <Box
         borderWidth="1px"
-        rounded="lg"
-        shadow="1px 1px 3px rgba(0,0,0,0.3)"
+        rounded="xl"
+        shadow="1px 1px 3px teal.500"
         maxWidth={800}
         p={6}
         m="10px auto"
         as="form">
-        <Progress hasStripe value={progress} mb="5%" mx="5%" isAnimated></Progress>
+        {/* <Progress variant="teal" hasStripe value={progress} mb="5%" mx="5%" isAnimated></Progress> */}
         {step === 1 ? <Form1 /> : step === 2 ? <Form2 /> : <Form3 />}
         <ButtonGroup mt="5%" w="100%">
-          <Flex w="100%" justifyContent="space-between">
+          <Flex w="100%" justifyContent="flex-end">
             <Flex>
               <Button
                 onClick={() => {

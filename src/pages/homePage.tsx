@@ -30,7 +30,7 @@ const HomePage = () => {
       <GridItem area={'header'}>
         <Counter />
       </GridItem>
-      <GridItem bg='green.300' area={'main'}>
+      <GridItem area={'main'}>
         <Multistep />
       </GridItem>
       <GridItem bg='blue.300' area={'footer'}>

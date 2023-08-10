@@ -5,11 +5,11 @@ export default function Counter() {
     <>
       <Flex color='white' w={{ base: '90%', md: '80%' }} px="8" py="4" borderRadius="6" justify='space-between' flexDirection={{ base: 'column', md: 'row' }}>
         <Flex justify='space-around' align="center" w={{ base: '100%', md: '50%' }}>
-          <Flex borderColor="gray.200" bg="teal.50" borderWidth="1px" flexDir='column' borderRadius="6" px="8" py="6" textAlign={'left'} color="gray.700">
+          <Flex borderColor="gray.200" borderWidth="1px" flexDir='column' borderRadius="6" px="8" py="6" textAlign={'left'} color="gray.700">
             <Text fontSize='sm' fontWeight="light">Total Pool</Text>
             <Text fontWeight={'bold'}> 0.01 MATIC</Text>
           </Flex>
-          <Flex borderColor="gray.200" bg="teal.50" borderWidth="1px" flexDir='column' borderRadius="6" px="8" py="6" textAlign={'left'} color="gray.700">
+          <Flex borderColor="gray.200" borderWidth="1px" flexDir='column' borderRadius="6" px="8" py="6" textAlign={'left'} color="gray.700">
             <Text fontSize='sm'>Total Pool</Text>
             <Text fontWeight={'bold'}> 0.01 MATIC</Text>
           </Flex>
