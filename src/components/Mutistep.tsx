@@ -10,6 +10,7 @@ import {
   Flex,
   FormControl,
   GridItem,
+  HStack,
   FormLabel,
   Input,
   Grid,
@@ -21,12 +22,14 @@ import {
   FormHelperText,
   InputRightElement,
   Radio,
+  useRadioGroup,
   Text,
   RadioGroup,
 } from '@chakra-ui/react';
 import Buy from './buy';
 import Projects from './projects';
-import { useToast } from '@chakra-ui/react'
+import { useToast } from '@chakra-ui/react';
+import RadioCard from './radioCard';
 
 const Form1 = () => {
   const [show, setShow] = useState(false)
@@ -44,27 +47,30 @@ const Form1 = () => {
 }
 
 const Form2 = () => {
+  const options = ['react', 'vue', 'svelte']
+
+  const { getRootProps, getRadioProps } = useRadioGroup({
+    name: 'framework',
+    defaultValue: 'react',
+    onChange: console.log,
+  })
+
+  const group = getRootProps()
   return (
     <>
       <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
         User Details
       </Heading>
-      <RadioGroup>
-        <Grid templateColumns='repeat(5, 1fr)' gap={6}>
-          <Box>
-            <Projects />
-            <Radio value='1' />
-          </Box>
-          <Box>
-            <Projects />
-            <Radio value='2' />
-          </Box>
-          <Box>
-            <Projects />
-            <Radio value='3' />
-          </Box>
-        </Grid>
-      </RadioGroup>
+      <HStack {...group}>
+        {options.map((value) => {
+          const radio = getRadioProps({ value })
+          return (
+            <RadioCard key={value} {...radio}>
+              {value}
+            </RadioCard>
+          )
+        })}
+      </HStack>
     </>
   )
 }
