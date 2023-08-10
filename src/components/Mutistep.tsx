@@ -8,7 +8,7 @@ import {
   Button,
   Heading,
   Flex,
-  HStack,
+  SimpleGrid,
   useRadioGroup
 } from '@chakra-ui/react';
 import Buy from './buy';
@@ -31,7 +31,7 @@ const Form1 = () => {
 }
 
 const Form2 = () => {
-  const options = ['react', 'vue', 'svelte']
+  const options = ['react', 'vue', 'svelte', 'angular', 'react-native',]
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'framework',
@@ -43,9 +43,9 @@ const Form2 = () => {
   return (
     <>
       <Heading w="100%" textAlign={'center'} fontWeight="normal" mb="2%">
-        User Details
+        Which project do you want to support?
       </Heading>
-      <HStack {...group}>
+      <SimpleGrid columns={[2, null, 3]} spacing='40px' {...group}>
         {options.map((value) => {
           const radio = getRadioProps({ value })
           return (
@@ -54,7 +54,7 @@ const Form2 = () => {
             </RadioCard>
           )
         })}
-      </HStack>
+      </SimpleGrid>
     </>
   )
 }
@@ -83,8 +83,10 @@ export default function Multistep() {
         shadow="1px 1px 3px teal.500"
         maxWidth={800}
         p={6}
+        overflowY='auto'
         m="10px auto"
-        as="form">
+        as="form"
+        h="600px" h-max="600px">
         {/* <Progress variant="teal" hasStripe value={progress} mb="5%" mx="5%" isAnimated></Progress> */}
         {step === 1 ? <Form1 /> : step === 2 ? <Form2 /> : <Form3 />}
         <ButtonGroup mt="5%" w="100%">
@@ -123,6 +125,7 @@ export default function Multistep() {
                 w="7rem"
                 colorScheme="red"
                 variant="solid"
+                ml="4"
                 onClick={() => {
                   toast({
                     title: 'Account created.',

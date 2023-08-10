@@ -1,5 +1,5 @@
 import {
-  useRadio, Box, Flex, Center, Text, Square, Spacer, Heading, HStack, Button, Stack, Avatar, VStack, Input, InputGroup, InputLeftAddon, Badge, Link, Radio,
+  useRadio, Box, Text, Heading, Avatar,
   useColorModeValue,
 } from "@chakra-ui/react";
 
@@ -20,9 +20,8 @@ export default function RadioCard(props: any) {
         borderRadius='md'
         boxShadow='md'
         _checked={{
-          bg: 'teal.600',
-          color: 'white',
-          borderColor: 'teal.600',
+          borderColor: 'teal.500',
+          borderWidth: '2px'
         }}
         _focus={{
           boxShadow: 'outline',
@@ -30,7 +29,6 @@ export default function RadioCard(props: any) {
         px={5}
         py={3}
       >
-        {props.children}
         <Avatar
           size={'xl'}
           src={
@@ -40,9 +38,9 @@ export default function RadioCard(props: any) {
           pos={'relative'}
         />
         <Heading fontSize={'xl'} fontFamily={'body'}>
-          Zora
+          {props.children}
         </Heading>
-        <Text fontWeight={300} color={'gray.500'} mb={2}>
+        <Text fontWeight={300} color='gray.500' mb={2}>
           102 votes
         </Text>
         <Text
