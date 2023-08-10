@@ -27,7 +27,6 @@ import {
   RadioGroup,
 } from '@chakra-ui/react';
 import Buy from './buy';
-import Projects from './projects';
 import { useToast } from '@chakra-ui/react';
 import RadioCard from './radioCard';
 

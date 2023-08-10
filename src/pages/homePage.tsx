@@ -1,7 +1,6 @@
 import React from "react";
 import Counter from '../components/counter';
 import Buy from '../components/buy';
-import Projects from '../components/projects';
 import Multistep from "../components/Mutistep";
 
 import {
