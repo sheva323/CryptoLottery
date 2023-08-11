@@ -2,7 +2,7 @@
 pragma solidity 0.8.19;
 
 import "forge-std/Test.sol";
-import "../src/SuperLoto.sol";
+import "../src/SuperLotoV2.sol";
 
 contract SuperLotoTest is Test {
   SuperLoto public superLoto;

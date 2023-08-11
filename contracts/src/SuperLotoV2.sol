@@ -13,6 +13,7 @@ contract SuperLoto {
     address indexed beneficiary,
     uint256 prizeAmount
   );
+
   struct Lottery {
     uint256 ticketCost;
     uint256 dueDate;
