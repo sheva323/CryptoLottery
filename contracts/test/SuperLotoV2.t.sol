@@ -42,6 +42,16 @@ contract SuperLotoTest is Test {
     );
     assertEq(newGame.maxPlayers, maxPlayers, "Max players should match");
     assertEq(newGame.minPlayers, minPlayers, "Min players should match");
+
+    uint256 expectedDueDate = block.timestamp +
+      uint256(gameDurationInDays) *
+      86400;
+    assertWithinRange(
+      newGame.dueDate,
+      expectedDueDate,
+      60,
+      "Due date should be approximately correct"
+    );
   }
 
   function testBuyTicket() public {
