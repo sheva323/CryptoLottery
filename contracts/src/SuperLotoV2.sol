@@ -2,8 +2,17 @@
 pragma solidity 0.8.19;
 
 contract SuperLoto {
-  event ExpensesPercentageUpdated(uint256 newPercentage);
-
+  event NewBetCreated(
+    uint256 indexed gameIndex,
+    uint128 indexed durationInDays,
+    uint128 newPercentage
+  );
+  event WinnerSelected(
+    uint256 indexed gameIndex,
+    address indexed winner,
+    address indexed beneficiary,
+    uint256 prizeAmount
+  );
   struct Lottery {
     uint256 ticketCost;
     uint256 dueDate;
@@ -38,13 +47,13 @@ contract SuperLoto {
 
   function startNewGame(
     uint256 _ticketCost,
-    uint256 _expensesPercentage,
-    uint256 _gameDurationInDays,
+    uint128 _expensesPercentage,
+    uint128 _gameDurationInDays,
     uint128 _maxPlayers,
     uint128 _minPlayers
   ) external onlyOwner {
     require(!lotteries[gameIndex].isActive, "The game is still in progress");
-    require(_expensesPercentage <= 5, "Expenses percentage must be <= 10");
+    require(_expensesPercentage <= 10, "Expenses percentage must be <= 10");
     uint256 _gameDurationInSeconds = _gameDurationInDays * SECONDS_IN_A_DAY;
     address[] memory initPlayers;
     gameIndex++;
@@ -59,7 +68,7 @@ contract SuperLoto {
       isPaid: false
     });
     expensesPercentage = _expensesPercentage;
-    emit ExpensesPercentageUpdated(_expensesPercentage);
+    emit NewBetCreated(gameIndex, _gameDurationInDays, _expensesPercentage);
   }
 
   function buyTicket(address _beneficiary) external payable {
@@ -76,6 +85,13 @@ contract SuperLoto {
         (currentLottery.maxPlayers - currentLottery.playerTickets.length),
       "Not enough tickets available."
     );
+
+    require(
+      currentLottery.playerTickets.length + numOfTicketsToBuy <=
+        currentLottery.maxPlayers,
+      "Total players would exceed maxPlayers"
+    );
+
     for (uint256 i = 0; i < numOfTicketsToBuy; i++) {
       lotteries[gameIndex].playerTickets.push(msg.sender);
     }
